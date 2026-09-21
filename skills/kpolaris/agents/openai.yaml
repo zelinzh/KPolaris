@@ -1,0 +1,4 @@
+interface:
+  display_name: "KPolaris"
+  short_description: "Build, verify and plot KPolaris images"
+  default_prompt: "Use $kpolaris to check my environment and generate a verified first image with a plot."

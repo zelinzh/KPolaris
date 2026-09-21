@@ -1,0 +1,15 @@
+# CUDA development environment for GPU builds.
+# Kokkos is still fetched by CMake unless KPOLARIS_FETCH_KOKKOS=OFF is set.
+spack:
+  view: true
+  concretizer:
+    unify: true
+  specs:
+  - 'cmake@3.31:'
+  - ninja
+  - cuda@13.0.2
+  - hdf5+cxx~mpi
+  - python
+  - py-numpy
+  - py-matplotlib
+  - py-h5py~mpi

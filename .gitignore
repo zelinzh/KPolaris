@@ -1,0 +1,14 @@
+build*/
+cmake-build*/
+CMakeUserPresets.json
+.spack-env/
+spack.lock
+__pycache__/
+*.pyc
+*.h5
+*.h5.params
+*.ncu-rep
+*.nsys-rep
+outputs/
+
+.venv/

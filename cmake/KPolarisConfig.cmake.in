@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(Kokkos @KPOLARIS_KOKKOS_VERSION@ CONFIG)
+
+include("${CMAKE_CURRENT_LIST_DIR}/KPolarisTargets.cmake")
+check_required_components(KPolaris)

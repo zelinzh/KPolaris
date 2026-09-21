@@ -1,0 +1,141 @@
+# KPolaris iharm sks precomputed template.
+# Reference: docs/parameters.md. Values are examples, not universal settings.
+# Units: length GM/c^2; time GM/c^3, unless stated otherwise.
+# Command-line --key=value overrides this file. Keep output and .params together.
+
+# Model and input
+# Choose the executable matching model. GRMHD input paths must be replaced
+# with your own data; physical normalizations below are illustrative.
+model=iharm
+iharm_dump=/path/to/snapshot
+
+# Output and reproducibility
+# HDF5 stores Stokes images and metadata. parameter_output=auto writes
+# <output>.params with the resolved settings; an explicit path is also accepted.
+output=iharm_sks_precomputed.h5
+format=hdf5
+parameter_output=auto
+
+# Camera and coordinates
+# pinhole: one observer; parallel_plane: parallel rays from an image plane.
+# The coordinate backend must be compiled; GRMHD metadata determine the metric.
+camera=pinhole
+coordinate=spherical_ks
+
+# Image resolution
+# nx and ny are pixel counts. Increase them to resolve image structure;
+# changing them does not require recompilation.
+nx=256
+ny=256
+
+# Viewing geometry and field of view
+# radius is in GM/c^2; inclination_deg is measured from the simulation +z axis.
+# dsource is in parsecs; fovx_dsource/fovy_dsource are full widths in microarcseconds.
+# xspan/yspan are half-widths in GM/c^2. Use one field-of-view convention.
+radius=1000
+inclination_deg=17
+dsource=16.9e6
+fovx_dsource=160
+fovy_dsource=160
+
+# Camera sampling
+# Offsets use screen slopes for pinhole, GM/c^2 for parallel_plane.
+# Keep use_pinhole_pixel_bias=0 for centered pixels; the optional bias is an
+# x shift in pixel units for pinhole only, not a physical image rotation.
+x_offset=0
+y_offset=0
+use_pinhole_pixel_bias=0
+pinhole_pixel_bias=-0.01
+
+# Spacetime and transfer domain
+# spin is dimensionless a/M; GRMHD readers take spin from input metadata.
+# inner_radius/outer_radius are in GM/c^2; non-positive values select
+# model-dependent automatic boundaries. This is distinct from the image FOV.
+spin=0.5
+inner_radius=-1
+outer_radius=100
+
+# Geodesic accuracy and work limit
+# step is the initial positive affine-step magnitude; adaptive=1 adjusts it.
+# Smaller adaptive_tolerance is stricter and usually slower; it is not image NMSE.
+# min_step/max_step bound the step; max_steps limits each pass per ray.
+step=0.025
+adaptive=1
+adaptive_tolerance=1e-8
+min_step=1e-10
+max_step=1.5
+max_steps=800000
+
+# Radiative-transfer sampling
+# max_radiation_step caps the affine step in the transfer region.
+# max_absorption_depth and max_faraday_depth limit local dimensionless depths.
+# max_radiation_depth sets both depth limits; later separate values override it.
+# substeps is retained for compatibility; current image paths use the step/depth controls.
+max_radiation_step=1
+max_radiation_depth=1
+max_absorption_depth=1
+max_faraday_depth=4
+substeps=1
+
+# Numerical warning thresholds
+# Closure, transported-frame and returned-basis warnings diagnose ray accuracy.
+# Changing these thresholds does not tighten the integrator or change Stokes.
+closure_x_warning=1
+closure_k_warning=1e-2
+frame_error_warning=1e-2
+basis_identity_warning=1e-2
+
+# Observing frequency
+# freq is in Hz, e.g. 230e9. For spectra use freq_list or freq_min/freq_max/nfreq;
+# see docs/parameters.md for precedence and compiled frequency capacity.
+freq=230000000000
+
+# GRMHD physical normalization
+# MODEL_M_unit is the simulation mass unit in grams, not the black-hole mass.
+# MODEL_mbh_solar is the black-hole mass in solar masses. Set both for your model.
+iharm_M_unit=3e25
+iharm_mbh_solar=6.2e9
+
+# GRMHD electron-temperature prescription
+# trat_small/trat_large are Ti/Te at low/high plasma beta.
+# beta_crit sets the transition; these change the emission and Faraday effects.
+iharm_trat_small=1
+iharm_trat_large=20
+iharm_beta_crit=1
+
+# Magnetization mask
+# sigma_cut excludes highly magnetized plasma from radiative transfer.
+# sigma_cut_high > sigma_cut adds a smooth taper; -1 uses the sharp cutoff.
+# This is a physical selection, not a numerical accuracy control.
+iharm_sigma_cut=1
+iharm_sigma_cut_high=-1
+
+# Synchrotron coefficient prescription
+# symphony/pandya and dexter are thermal fits. Switching electron distributions
+# requires a compatible build; see docs/electron_distributions.md.
+emission_fit=dexter
+
+# Stokes transfer
+# scalar_transport=0 retains full I/Q/U/V; 1 selects the torus scalar-I path.
+scalar_transport=0
+
+# Spatial sampling of the fluid
+# interpolate_derived_scalars=1 interpolates cell-derived ne, Thetae, |B|, sigma, beta.
+# The primitive-first alternative needs a compatible build. This switch is
+# separate from the slow-light time interpolation policy.
+iharm_interpolate_derived_scalars=1
+
+# Optional spherical Kerr-Schild resampling
+# none uses the native grid. spherical_ks_primitives/precomputed add a second grid
+# and require a compiled spherical_ks backend, even if coordinate=fmks is listed.
+# For native-grid slow light with fluid interpolation, select none.
+iharm_resample=spherical_ks_precomputed
+
+# Resampling grid resolution and extent
+# n1/n2/n3 are radial/polar/azimuthal cell counts; 0 selects input dimensions.
+# r_in/r_out are in GM/c^2; non-positive values use input-dependent bounds.
+iharm_resample_n1=0
+iharm_resample_n2=0
+iharm_resample_n3=0
+iharm_resample_r_in=-1
+iharm_resample_r_out=-1

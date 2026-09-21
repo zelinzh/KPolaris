@@ -1,0 +1,14 @@
+# Default public development environment: CPU-only and lightweight.
+# This intentionally mirrors spack-cpu.yaml.  Use spack-cuda.yaml for GPU builds.
+spack:
+  view: true
+  concretizer:
+    unify: true
+  specs:
+  - 'cmake@3.31:'
+  - ninja
+  - hdf5+cxx~mpi
+  - python
+  - py-numpy
+  - py-matplotlib
+  - py-h5py~mpi

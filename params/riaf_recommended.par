@@ -1,0 +1,130 @@
+# KPolaris riaf recommended template.
+# Reference: docs/parameters.md. Values are examples, not universal settings.
+# Units: length GM/c^2; time GM/c^3, unless stated otherwise.
+# Command-line --key=value overrides this file. Keep output and .params together.
+
+# Polarization convention
+# N: EVPA from image north toward east. W: horizontal zero.
+# This changes the Q/U reference axes, not the physical polarization.
+evpa_0=N
+
+# Model and input
+# Choose the executable matching model. GRMHD input paths must be replaced
+# with your own data; physical normalizations below are illustrative.
+model=riaf
+
+# Output and reproducibility
+# HDF5 stores Stokes images and metadata. parameter_output=auto writes
+# <output>.params with the resolved settings; an explicit path is also accepted.
+output=riaf_recommended.h5
+format=hdf5
+parameter_output=auto
+
+# Camera and coordinates
+# pinhole: one observer; parallel_plane: parallel rays from an image plane.
+# The coordinate backend must be compiled; GRMHD metadata determine the metric.
+camera=pinhole
+coordinate=boyer_lindquist
+
+# Image resolution
+# nx and ny are pixel counts. Increase them to resolve image structure;
+# changing them does not require recompilation.
+nx=256
+ny=256
+
+# Viewing geometry and field of view
+# radius is in GM/c^2; inclination_deg is measured from the simulation +z axis.
+# dsource is in parsecs; fovx_dsource/fovy_dsource are full widths in microarcseconds.
+# xspan/yspan are half-widths in GM/c^2. Use one field-of-view convention.
+radius=1000
+inclination_deg=85
+xspan=19.554708160431073
+# Here fov is read after xspan and overrides that earlier half-width.
+# For a pinhole camera, fov is the full screen-slope width (approximately radians).
+fov=0.08
+
+# Camera sampling
+# Offsets use screen slopes for pinhole, GM/c^2 for parallel_plane.
+# Keep use_pinhole_pixel_bias=0 for centered pixels; the optional bias is an
+# x shift in pixel units for pinhole only, not a physical image rotation.
+x_offset=0
+y_offset=0
+use_pinhole_pixel_bias=0
+pinhole_pixel_bias=-0.01
+
+# Spacetime and transfer domain
+# spin is dimensionless a/M; GRMHD readers take spin from input metadata.
+# inner_radius/outer_radius are in GM/c^2; non-positive values select
+# model-dependent automatic boundaries. This is distinct from the image FOV.
+spin=0.9375
+inner_radius=-1
+outer_radius=-1
+
+# Geodesic accuracy and work limit
+# step is the initial positive affine-step magnitude; adaptive=1 adjusts it.
+# Smaller adaptive_tolerance is stricter and usually slower; it is not image NMSE.
+# min_step/max_step bound the step; max_steps limits each pass per ray.
+step=0.025
+adaptive=1
+adaptive_tolerance=1e-10
+min_step=1e-10
+max_step=2
+max_steps=400000
+
+# Radiative-transfer sampling
+# max_radiation_step caps the affine step in the transfer region.
+# max_absorption_depth and max_faraday_depth limit local dimensionless depths.
+# max_radiation_depth sets both depth limits; later separate values override it.
+# substeps is retained for compatibility; current image paths use the step/depth controls.
+max_radiation_step=2
+max_radiation_depth=1
+max_absorption_depth=1
+max_faraday_depth=4
+substeps=1
+
+# Numerical warning thresholds
+# Closure, transported-frame and returned-basis warnings diagnose ray accuracy.
+# Changing these thresholds does not tighten the integrator or change Stokes.
+closure_x_warning=1
+closure_k_warning=1e-2
+frame_error_warning=1e-2
+basis_identity_warning=1e-2
+
+# Observing frequency
+# freq is in Hz, e.g. 230e9. For spectra use freq_list or freq_min/freq_max/nfreq;
+# see docs/parameters.md for precedence and compiled frequency capacity.
+freq=230000000000
+
+# RIAF emitting region
+# riaf_r_min/riaf_r_max bound the analytic plasma in GM/c^2.
+# The integration boundary may be outside this region.
+riaf_r_min=1
+riaf_r_max=100
+
+# RIAF density, temperature and thickness
+# ne = riaf_ne_unit * riaf_nth0 * r^riaf_pow_nth * vertical Gaussian.
+# Te = riaf_te_unit * riaf_Te0 * r^riaf_pow_T, subject to the model temperature floor.
+# Density units are cm^-3, temperature units K; riaf_disk_h sets H/R.
+riaf_nth0=1
+riaf_Te0=1
+riaf_disk_h=0.35
+riaf_pow_nth=-1.1
+riaf_pow_T=-0.84
+riaf_ne_unit=5000000
+riaf_te_unit=100000000000
+
+# Physical mass scale
+# Black-hole mass in solar masses; sets the geometric length and time units.
+# For binary_riaf this is the total reference mass.
+riaf_mbh_solar=4300000
+
+# RIAF flow velocities
+# riaf_keplerian_factor blends the angular velocity with the circular prescription;
+# riaf_infall_factor controls radial infall. These change the emitting flow.
+riaf_keplerian_factor=1
+riaf_infall_factor=0
+
+# Synchrotron coefficient prescription
+# symphony/pandya and dexter are thermal fits. Switching electron distributions
+# requires a compatible build; see docs/electron_distributions.md.
+emission_fit=symphony

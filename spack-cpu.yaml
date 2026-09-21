@@ -1,0 +1,14 @@
+# CPU-only development environment for quick public smoke tests.
+# The root spack.yaml intentionally mirrors this file.
+spack:
+  view: true
+  concretizer:
+    unify: true
+  specs:
+  - 'cmake@3.31:'
+  - ninja
+  - hdf5+cxx~mpi
+  - python
+  - py-numpy
+  - py-matplotlib
+  - py-h5py~mpi

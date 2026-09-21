@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use KPolaris in published work, please cite this software and the associated paper when available."
+title: "KPolaris: GPU-accelerated Polarized Radiative Transfer in General Relativity"
+type: software
+authors:
+  - family-names: "Zhang"
+    given-names: "Zelin"
+    orcid: "https://orcid.org/0009-0008-9585-1807"
+    email: "zhangzelin1@nbu.edu.cn"
+    affiliation: >-
+      Institute of Fundamental Physics and Quantum Technology, & School of Physical
+      Science and Technology, Ningbo University, Ningbo, Zhejiang 315211, P. R. China;
+      Zhejiang Key Laboratory of Extreme Universe, & BINGO Center, Ningbo University,
+      Ningbo, Zhejiang 315211, China
+  - family-names: "Chen"
+    given-names: "Bin"
+    orcid: "https://orcid.org/0000-0003-4509-9705"
+    email: "chenbin1@nbu.edu.cn"
+    affiliation: >-
+      Institute of Fundamental Physics and Quantum Technology, & School of Physical
+      Science and Technology, Ningbo University, Ningbo, Zhejiang 315211, P. R. China;
+      Zhejiang Key Laboratory of Extreme Universe, & BINGO Center, Ningbo University,
+      Ningbo, Zhejiang 315211, China;
+      School of Physics, & Center for High Energy Physics, Peking University,
+      No.5 Yiheyuan Rd, Beijing 100871, P. R. China
+version: 0.1.0
+date-released: 2026-09-21
+repository-code: "https://github.com/zelinzh/KPolaris"
+url: "https://github.com/zelinzh/KPolaris"
+license: BSD-3-Clause
+abstract: "KPolaris is a Kokkos-based polarized general-relativistic radiative transfer code with analytic and GRMHD image, trace, analysis, and slow-light workflows."
+keywords:
+  - "general relativity"
+  - "radiative transfer"
+  - "polarization"
+  - "GRMHD"
+  - "Kokkos"
+  - "CUDA"

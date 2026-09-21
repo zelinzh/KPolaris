@@ -1,0 +1,4 @@
+# Plotting, image inspection and Python regression tests (Python 3.11+).
+numpy>=1.23
+h5py>=3.8
+matplotlib>=3.6

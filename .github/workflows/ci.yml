@@ -1,0 +1,223 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cpu-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install validation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            ninja-build \
+            libhdf5-dev \
+            python3-h5py \
+            python3-matplotlib \
+            python3-numpy
+
+      - name: Configure release validation build
+        run: |
+          cmake -S . -B build-ci -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DKPOLARIS_IMAGE_MODELS=all \
+            -DKPOLARIS_GRMHD_COORDINATES=all \
+            -DKPOLARIS_BUILD_TRACE_TOOL=ON \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_AUX_TOOLS=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_MAX_FREQUENCIES=2 \
+            -DKPOLARIS_ENABLE_CSV_OUTPUT=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON
+
+      - name: Build all configured executables and tests
+        run: cmake --build build-ci --parallel 2
+
+      - name: Run unit and HDF5 contract tests
+        run: ctest --test-dir build-ci --output-on-failure
+
+  cpu-coverage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install coverage dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            ninja-build \
+            libhdf5-dev \
+            python3-h5py \
+            python3-matplotlib \
+            python3-numpy
+
+      - name: Configure project-only coverage build
+        run: |
+          cmake -S . -B build-coverage -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DKPOLARIS_ENABLE_COVERAGE=ON \
+            -DKPOLARIS_IMAGE_MODELS=all \
+            -DKPOLARIS_GRMHD_COORDINATES=all \
+            -DKPOLARIS_BUILD_TRACE_TOOL=ON \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_AUX_TOOLS=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_MAX_FREQUENCIES=2 \
+            -DKPOLARIS_ENABLE_CSV_OUTPUT=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON
+
+      - name: Run coverage validation
+        run: |
+          cmake --build build-coverage --parallel 2
+          ctest --test-dir build-coverage --output-on-failure
+          python3 scripts/summarize_gcov_coverage.py \
+            --build-dir=build-coverage \
+            --source-root=. \
+            --json-output=build-coverage/kpolaris-coverage.json \
+            --markdown-output=build-coverage/kpolaris-coverage.md \
+            --min-line-percent=70 \
+            --min-branch-percent=45
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+      UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            ninja-build \
+            libhdf5-dev \
+            python3-h5py \
+            python3-matplotlib \
+            python3-numpy
+
+      - name: Configure sanitizer build
+        run: |
+          cmake -S . -B build-sanitize -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_IMAGE_TOOL=ON \
+            -DKPOLARIS_IMAGE_MODELS=all \
+            -DKPOLARIS_GRMHD_COORDINATES=all \
+            -DKPOLARIS_BUILD_TRACE_TOOL=ON \
+            -DKPOLARIS_BUILD_AUX_TOOLS=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON \
+            -DKPOLARIS_ENABLE_SANITIZERS=ON
+
+      - name: Build and run sanitizer tests
+        run: |
+          cmake --build build-sanitize --parallel 2
+          ctest --test-dir build-sanitize --output-on-failure
+
+  clang-unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install Clang
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes clang ninja-build
+
+      - name: Configure, build, and test with Clang
+        run: |
+          cmake -S . -B build-clang -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_IMAGE_TOOL=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON
+          cmake --build build-clang --parallel 2 --target \
+            kpolaris_unit_tests kpolaris_numerical_validation \
+            kpolaris_symphony_grid_probe
+          ctest --test-dir build-clang --output-on-failure \
+            -R '^(kpolaris_unit_tests|kpolaris_numerical_validation)$'
+
+  precision-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install precision-test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes \
+            ninja-build \
+            libhdf5-dev \
+            python3-h5py \
+            python3-matplotlib \
+            python3-numpy
+
+      - name: Validate mixed special-function precision
+        run: |
+          cmake -S . -B build-special-float -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_SPECIAL_FUNCTION_FLOAT=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON
+          cmake --build build-special-float --parallel 2
+          ctest --test-dir build-special-float --output-on-failure
+
+      - name: Validate experimental geometry-only main float
+        run: |
+          cmake -S . -B build-main-float -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DKPOLARIS_BUILD_EXAMPLES=OFF \
+            -DKPOLARIS_BUILD_IMAGE_TOOL=OFF \
+            -DKPOLARIS_BUILD_TRACE_TOOL=OFF \
+            -DKPOLARIS_BUILD_TESTS=ON \
+            -DKPOLARIS_USE_FLOAT=ON \
+            -DKPOLARIS_ENABLE_WARNINGS=ON
+          cmake --build build-main-float --parallel 2 --target kpolaris_unit_tests
+          ctest --test-dir build-main-float --output-on-failure \
+            -R '^kpolaris_unit_tests$'
+
+      - name: Reject unsupported float science executables
+        run: |
+          if cmake -S . -B build-invalid-float -G Ninja \
+            -DKPOLARIS_USE_FLOAT=ON \
+            -DKPOLARIS_BUILD_IMAGE_TOOL=ON \
+            -DKPOLARIS_BUILD_TESTS=OFF; then
+            echo "main-float image configuration unexpectedly succeeded" >&2
+            exit 1
+          fi

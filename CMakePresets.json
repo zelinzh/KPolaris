@@ -1,0 +1,436 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-presets/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "cpu-openmp-image-base",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_ENABLE_OPENMP": "ON",
+        "KPOLARIS_ENABLE_SERIAL": "OFF",
+        "KPOLARIS_ENABLE_NATIVE_CPU_OPTIMIZATION": "ON"
+      }
+    },
+    {
+      "name": "cuda-image-base",
+      "hidden": true,
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "${sourceDir}/build-presets/cuda-bootstrap/_deps/kokkos-src/bin/nvcc_wrapper",
+        "KPOLARIS_ENABLE_CUDA": "ON",
+        "KPOLARIS_CUDA_ARCH": "$env{KPOLARIS_CUDA_ARCH}",
+        "KPOLARIS_BUILD_TESTS": "OFF"
+      },
+      "description": "Set KPOLARIS_CUDA_ARCH in the environment or pass -DKPOLARIS_CUDA_ARCH for the target GPU."
+    },
+    {
+      "name": "cpu-riaf",
+      "displayName": "CPU RIAF image",
+      "description": "Default single-model CPU build for analytic RIAF images and public tests.",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "riaf"
+      }
+    },
+    {
+      "name": "cpu-torus",
+      "displayName": "CPU torus image",
+      "description": "Single-model CPU build for the analytic magnetized-torus image executable.",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "torus"
+      }
+    },
+    {
+      "name": "cpu-iharm",
+      "displayName": "CPU iHARM image",
+      "description": "Single-model CPU build for the iHARM image executable with the native FMKS backend.",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "iharm",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cpu-trace",
+      "displayName": "CPU trace tool",
+      "description": "CPU build with the generic HDF5 trace executable enabled.",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_BUILD_TRACE_TOOL": "ON",
+        "KPOLARIS_IMAGE_MODELS": "riaf"
+      }
+    },
+    {
+      "name": "cpu-openmp-riaf",
+      "displayName": "OpenMP RIAF image",
+      "description": "Optimized OpenMP CPU build for local RIAF performance checks.",
+      "inherits": "cpu-openmp-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "riaf"
+      }
+    },
+    {
+      "name": "cpu-openmp-torus",
+      "displayName": "OpenMP torus image",
+      "description": "Optimized OpenMP CPU build for local magnetized-torus performance checks.",
+      "inherits": "cpu-openmp-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "torus"
+      }
+    },
+    {
+      "name": "cpu-openmp-iharm",
+      "displayName": "OpenMP iHARM image",
+      "description": "Optimized OpenMP CPU build for local iHARM performance checks with the native FMKS backend.",
+      "inherits": "cpu-openmp-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "iharm",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cuda-bootstrap",
+      "displayName": "CUDA nvcc_wrapper bootstrap",
+      "description": "Fetch Kokkos in a stable build directory so CUDA presets can use its nvcc_wrapper.",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_BUILD_IMAGE_TOOL": "OFF",
+        "KPOLARIS_BUILD_TRACE_TOOL": "OFF",
+        "KPOLARIS_BUILD_TESTS": "OFF",
+        "KPOLARIS_ENABLE_CUDA": "OFF"
+      }
+    },
+    {
+      "name": "cuda-riaf",
+      "displayName": "CUDA RIAF image",
+      "description": "CUDA build for the RIAF image executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "riaf"
+      }
+    },
+    {
+      "name": "cuda-torus",
+      "displayName": "CUDA torus image",
+      "description": "CUDA build for the analytic magnetized-torus image executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "torus"
+      }
+    },
+    {
+      "name": "cuda-iharm",
+      "displayName": "CUDA iHARM image",
+      "description": "CUDA build for the iHARM image executable with the native FMKS backend. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "iharm",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cuda-bhac",
+      "displayName": "CUDA BHAC image",
+      "description": "CUDA build for the BHAC image executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "bhac"
+      }
+    },
+    {
+      "name": "cuda-hamr",
+      "displayName": "CUDA H-AMR image",
+      "description": "CUDA build for the H-AMR image executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "hamr"
+      }
+    },
+    {
+      "name": "cuda-trace-athenak",
+      "displayName": "CUDA AthenaK trace",
+      "description": "CUDA build for the AthenaK-specific trace executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_BUILD_IMAGE_TOOL": "OFF",
+        "KPOLARIS_BUILD_TRACE_TOOL": "ON"
+      }
+    },
+    {
+      "name": "cuda-trace-hamr",
+      "displayName": "CUDA H-AMR trace",
+      "description": "CUDA build for the H-AMR-specific trace executable. Configure cuda-bootstrap first.",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_BUILD_IMAGE_TOOL": "OFF",
+        "KPOLARIS_BUILD_TRACE_TOOL": "ON"
+      }
+    },
+    {
+      "name": "cpu-kharma",
+      "displayName": "cpu kharma image",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "kharma",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cpu-athenak",
+      "displayName": "cpu athenak image",
+      "inherits": "base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "athenak",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cpu-openmp-kharma",
+      "displayName": "cpu-openmp kharma image",
+      "inherits": "cpu-openmp-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "kharma",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cpu-openmp-athenak",
+      "displayName": "cpu-openmp athenak image",
+      "inherits": "cpu-openmp-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "athenak",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cuda-kharma",
+      "displayName": "cuda kharma image",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "kharma",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    },
+    {
+      "name": "cuda-athenak",
+      "displayName": "cuda athenak image",
+      "inherits": "cuda-image-base",
+      "cacheVariables": {
+        "KPOLARIS_IMAGE_MODELS": "athenak",
+        "KPOLARIS_GRMHD_COORDINATES": "fmks"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "cpu-riaf",
+      "configurePreset": "cpu-riaf",
+      "targets": [
+        "all"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-torus",
+      "configurePreset": "cpu-torus",
+      "targets": [
+        "all"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-iharm",
+      "configurePreset": "cpu-iharm",
+      "targets": [
+        "all"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-trace",
+      "configurePreset": "cpu-trace",
+      "targets": [
+        "all"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-openmp-riaf",
+      "configurePreset": "cpu-openmp-riaf",
+      "targets": [
+        "kpolaris_model_image_riaf"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-openmp-torus",
+      "configurePreset": "cpu-openmp-torus",
+      "targets": [
+        "kpolaris_model_image_torus"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-openmp-iharm",
+      "configurePreset": "cpu-openmp-iharm",
+      "targets": [
+        "kpolaris_model_image_iharm"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-bootstrap",
+      "configurePreset": "cuda-bootstrap",
+      "jobs": 4
+    },
+    {
+      "name": "cuda-riaf",
+      "configurePreset": "cuda-riaf",
+      "targets": [
+        "kpolaris_model_image_riaf"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-torus",
+      "configurePreset": "cuda-torus",
+      "targets": [
+        "kpolaris_model_image_torus"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-iharm",
+      "configurePreset": "cuda-iharm",
+      "targets": [
+        "kpolaris_model_image_iharm"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-bhac",
+      "configurePreset": "cuda-bhac",
+      "targets": [
+        "kpolaris_model_image_bhac"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-hamr",
+      "configurePreset": "cuda-hamr",
+      "targets": [
+        "kpolaris_model_image_hamr"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-trace-athenak",
+      "configurePreset": "cuda-trace-athenak",
+      "targets": [
+        "kpolaris_model_trace_athenak"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cuda-trace-hamr",
+      "configurePreset": "cuda-trace-hamr",
+      "targets": [
+        "kpolaris_model_trace_hamr"
+      ],
+      "jobs": 4
+    },
+    {
+      "name": "cpu-kharma",
+      "configurePreset": "cpu-kharma",
+      "targets": [
+        "kpolaris_model_image_kharma"
+      ],
+      "jobs": 2
+    },
+    {
+      "name": "cpu-athenak",
+      "configurePreset": "cpu-athenak",
+      "targets": [
+        "kpolaris_model_image_athenak"
+      ],
+      "jobs": 2
+    },
+    {
+      "name": "cpu-openmp-kharma",
+      "configurePreset": "cpu-openmp-kharma",
+      "targets": [
+        "kpolaris_model_image_kharma"
+      ],
+      "jobs": 2
+    },
+    {
+      "name": "cpu-openmp-athenak",
+      "configurePreset": "cpu-openmp-athenak",
+      "targets": [
+        "kpolaris_model_image_athenak"
+      ],
+      "jobs": 2
+    },
+    {
+      "name": "cuda-kharma",
+      "configurePreset": "cuda-kharma",
+      "targets": [
+        "kpolaris_model_image_kharma"
+      ],
+      "jobs": 2
+    },
+    {
+      "name": "cuda-athenak",
+      "configurePreset": "cuda-athenak",
+      "targets": [
+        "kpolaris_model_image_athenak"
+      ],
+      "jobs": 2
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "cpu-riaf",
+      "configurePreset": "cpu-riaf",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "cpu-torus",
+      "configurePreset": "cpu-torus",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "cpu-iharm",
+      "configurePreset": "cpu-iharm",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "cpu-trace",
+      "configurePreset": "cpu-trace",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

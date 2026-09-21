@@ -1,0 +1,28 @@
+#pragma once
+
+#include <ostream>
+
+namespace kpolaris::build_info {
+
+inline constexpr const char* version = "@PROJECT_VERSION@";
+inline constexpr const char* source_revision = "@KPOLARIS_BUILD_SOURCE_REVISION@";
+inline constexpr int source_dirty = @KPOLARIS_BUILD_SOURCE_DIRTY@;
+inline constexpr const char* source_fingerprint = "@KPOLARIS_BUILD_SOURCE_FINGERPRINT@";
+inline constexpr const char* compiler_id = "@CMAKE_CXX_COMPILER_ID@";
+inline constexpr const char* compiler_version = "@CMAKE_CXX_COMPILER_VERSION@";
+inline constexpr const char* build_type = "@CMAKE_BUILD_TYPE@";
+
+inline constexpr const char* source_dirty_label() {
+    return source_dirty < 0 ? "unknown" : (source_dirty == 0 ? "false" : "true");
+}
+
+inline void print_version(std::ostream& out) {
+    out << "KPolaris " << version << '\n'
+        << "revision " << source_revision << '\n'
+        << "source_dirty " << source_dirty_label() << '\n'
+        << "source_fingerprint " << source_fingerprint << '\n'
+        << "compiler " << compiler_id << ' ' << compiler_version << '\n'
+        << "build_type " << build_type << '\n';
+}
+
+} // namespace kpolaris::build_info
