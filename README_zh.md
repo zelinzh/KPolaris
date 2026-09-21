@@ -129,12 +129,16 @@ Agent 可以依据仓库内的[操作指南](skills/kpolaris/SKILL.md)完成环�
 
 如果在研究中使用 KPolaris，请引用本软件：
 
+v0.1.0 版本 DOI：[10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728)。
+[所有版本的总 DOI](https://doi.org/10.5281/zenodo.22879727)用于指代持续维护的软件；复现本次发布时请使用版本 DOI。
+
 ```bibtex
 @software{zhang_kpolaris,
   author  = {Zhang, Zelin and Chen, Bin},
   title   = {{KPolaris}: {GPU}-accelerated Polarized Radiative Transfer in General Relativity},
   year    = {2026},
   version = {0.1.0},
+  doi     = {10.5281/zenodo.22879728},
   url     = {https://github.com/zelinzh/KPolaris}
 }
 ```

@@ -48,3 +48,11 @@ explains how to limit compilation work.
 Simulation data and optional external decoders are supplied separately. Use
 the parameter templates shipped with your code version, set the physical units
 for your simulation, and check convergence of the observables you intend to use.
+
+## Citation
+
+If you use KPolaris in your research, cite version 0.1.0 using
+DOI [10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728).
+Author and software metadata are provided in [CITATION.cff](../CITATION.cff).
+The [all-versions DOI](https://doi.org/10.5281/zenodo.22879727) identifies the software
+across releases. Please also cite the associated paper when available.

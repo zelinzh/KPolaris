@@ -214,12 +214,16 @@ Maintainer: Zelin Zhang — [zhangzelin1@nbu.edu.cn](mailto:zhangzelin1@nbu.edu.
 
 If you use KPolaris in your research, please cite the software:
 
+Version 0.1.0 DOI: [10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728).
+The [all-versions DOI](https://doi.org/10.5281/zenodo.22879727) identifies the software across releases.
+
 ```bibtex
 @software{zhang_kpolaris,
   author  = {Zhang, Zelin and Chen, Bin},
   title   = {{KPolaris}: {GPU}-accelerated Polarized Radiative Transfer in General Relativity},
   year    = {2026},
   version = {0.1.0},
+  doi     = {10.5281/zenodo.22879728},
   url     = {https://github.com/zelinzh/KPolaris}
 }
 ```
