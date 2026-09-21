@@ -17,6 +17,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for model in ('riaf','iharm','athenak'):p.add_argument('--'+model,type=Path)
     p.add_argument('--workdir',type=Path)
+    p.add_argument('--max-frequencies',type=int,default=2)
     a=p.parse_args(); temp=tempfile.TemporaryDirectory() if a.workdir is None else None
     work=(a.workdir or Path(temp.name)).resolve();work.mkdir(parents=True,exist_ok=True)
     rows=[]
@@ -63,12 +64,14 @@ def main():
         refined=run('refined',['--direct_only=1','--max_step=.25','--adaptive_tolerance=1e-12','--max_radiation_step=.05'])
         row['refined_image_stokes_l1']=compare(read_stokes(refined),dir_s,.03)
         if fixture:
-            freq=['--freq_list=230000000000,345000000000']
+            # Keep the slow-light checks in single-frequency builds as well.
+            frequencies=['230000000000','345000000000'][:min(2,a.max_frequencies)]
+            freq=['--freq_list='+','.join(frequencies)]
             fast=run('multi',['--direct_only=1',*freq])
             row['multi_single_stokes_l1']=compare(read_stokes(fast),dir_s,.003)
             control=run('control',['--direct_only=1',*freq,'--multifrequency_chunk_size=1','--split_transport=0'])
             fused_multi=run('fused_multi',['--direct_only=1',*freq,'--split_transport=0'])
-            for f in (0,1):
+            for f in range(len(frequencies)):
                 compare(read_stokes(fast,f),read_stokes(control,f),1e-6)
                 compare(read_stokes(fast,f),read_stokes(fused_multi,f),1e-6)
             slowargs=['--direct_only=1','--slow_light=1','--slow_light_observation_time=200',
@@ -76,7 +79,7 @@ def main():
             slow=run('slow',slowargs)
             no_prefetch=run('slow_no_prefetch',slowargs+['--slow_light_prefetch=0'])
             full_slow=run('slow_all',slowargs+['--direct_only=0'])
-            for f in (0,1):
+            for f in range(len(frequencies)):
                 compare(read_stokes(no_prefetch,f),read_stokes(slow,f),1e-6)
             changed=work/(model+'_changed'+fixture.suffix)
             shutil.copyfile(fixture,changed)
@@ -89,12 +92,12 @@ def main():
                 prim[4]*=1.5;prim[5:8]*=.8;changed.write_bytes(raw)
             evolving=run('slow_evolving',slowargs+[f'--slow_light_dump_list={fixture},{changed},{fixture}',
                 '--analysis_mode=1','--analysis_response=magnetic_scale','--analysis_partition=region'])
-            row['evolving_slow_responses']=[validate(evolving,f)['validation'] for f in (0,1)]
+            row['evolving_slow_responses']=[validate(evolving,f)['validation'] for f in range(len(frequencies))]
             row['evolving_static_difference_l1']=float(np.abs(read_stokes(evolving)-read_stokes(slow)).sum()/np.abs(read_stokes(slow)).sum())
             assert row['evolving_static_difference_l1']>1e-5
             slowresponse=run('slow_response',slowargs+['--analysis_mode=1','--analysis_response=temperature_scale','--analysis_partition=region'])
             row['slow_fast_stokes_l1']=[];row['slow_responses']=[]
-            for f in (0,1):
+            for f in range(len(frequencies)):
                 row['slow_fast_stokes_l1'].append(compare(read_stokes(slow,f),read_stokes(fast,f),.003))
                 result=validate(slowresponse,f);row['slow_responses'].append(result['validation'])
                 compare(read_stokes(slowresponse,f),read_stokes(slow,f),.02)

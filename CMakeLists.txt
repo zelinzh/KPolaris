@@ -809,11 +809,13 @@ if(KPOLARIS_BUILD_TESTS)
             COMMAND "${Python3_EXECUTABLE}"
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_equatorial.py"
               --${response_model}=$<TARGET_FILE:kpolaris_model_image_${response_model}>
+              --max-frequencies=${KPOLARIS_MAX_FREQUENCIES}
               --workdir=${CMAKE_CURRENT_BINARY_DIR}/test_equatorial_${response_model})
           add_test(NAME kpolaris_direct_only_${response_model}
             COMMAND "${Python3_EXECUTABLE}"
               "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_direct_only.py"
               --${response_model}=$<TARGET_FILE:kpolaris_model_image_${response_model}>
+              --max-frequencies=${KPOLARIS_MAX_FREQUENCIES}
               --workdir=${CMAKE_CURRENT_BINARY_DIR}/test_direct_only_${response_model})
           add_test(NAME kpolaris_physical_response_${response_model}
             COMMAND "${Python3_EXECUTABLE}"

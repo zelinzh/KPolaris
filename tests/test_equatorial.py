@@ -18,6 +18,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     for model in ('riaf','iharm','athenak'): parser.add_argument('--'+model,type=Path)
     parser.add_argument('--workdir',type=Path)
+    parser.add_argument('--max-frequencies',type=int,default=2)
     args=parser.parse_args();temp=tempfile.TemporaryDirectory() if args.workdir is None else None
     work=(args.workdir or Path(temp.name)).resolve();work.mkdir(parents=True,exist_ok=True)
     rows=[]
@@ -79,11 +80,13 @@ def main():
         direct=run('direct',wedge+['--direct_only=1'])
         assert 0<float(read_stokes(direct)[0].sum())<=thin_s[0].sum()*1.005
         if fixture:
-            freqs=['--freq_list=230000000000,345000000000']
+            # Match compiled frequency support without dropping slow-light checks.
+            frequencies=['230000000000','345000000000'][:min(2,args.max_frequencies)]
+            freqs=['--freq_list='+','.join(frequencies)]
             multi=run('multi',wedge+freqs)
             control=run('control',wedge+freqs+['--split_transport=0','--multifrequency_chunk_size=1'])
             fused_multi=run('fused_multi',wedge+freqs+['--split_transport=0'])
-            for f in (0,1):
+            for f in range(len(frequencies)):
                 compare(read_stokes(multi,f),read_stokes(control,f),1e-6)
                 compare(read_stokes(multi,f),read_stokes(fused_multi,f),1e-6)
             slowargs=wedge+freqs+['--slow_light=1','--slow_light_observation_time=200',
@@ -92,7 +95,7 @@ def main():
             slowresponse=run('slow_response',slowargs+['--analysis_mode=1',
                 '--analysis_response=temperature_scale','--analysis_partition=region'])
             row['slow_fast_l1']=[]
-            for f in (0,1):
+            for f in range(len(frequencies)):
                 row['slow_fast_l1'].append(compare(read_stokes(slow,f),read_stokes(multi,f),.005))
                 validate(slowresponse,f)
                 compare(read_stokes(slowresponse,f),read_stokes(slow,f),.005)
