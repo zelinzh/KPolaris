@@ -6,7 +6,7 @@ KPolaris solves general-relativistic radiative transfer to produce Stokes
 I/Q/U/V images from analytic plasma models and GRMHD simulations. Kokkos provides
 portable parallel execution from a shared numerical implementation.
 
-[User guide](docs/README.md) · [Wiki](https://github.com/zelinzh/KPolaris/wiki) · [Plotting](docs/plotting.md) · [Code structure](docs/architecture.md) · [中文说明](README_zh.md)
+[arxiv:2609.26298](https://arxiv.org/abs/2609.26298) · [User guide](docs/README.md) · [Wiki](https://github.com/zelinzh/KPolaris/wiki) · [Plotting](docs/plotting.md) · [Code structure](docs/architecture.md) · [中文说明](README_zh.md)
 
 <img src="assets/riaf-preview.png" alt="M87* analytic RIAF: Stokes I, Q, U and V at 230 GHz" width="820">
 
@@ -212,7 +212,22 @@ Maintainer: Zelin Zhang — [zhangzelin1@nbu.edu.cn](mailto:zhangzelin1@nbu.edu.
 
 ## Citation
 
-If you use KPolaris in your research, please cite the software:
+If you use KPolaris in your research, please cite the paper and the software version used.
+
+Zelin Zhang and Bin Chen (2026), *KPolaris: GPU-accelerated Polarized Radiative
+Transfer in General Relativity*. [arXiv:2609.26298](https://arxiv.org/abs/2609.26298).
+
+```bibtex
+@misc{zhang2026kpolaris,
+  author        = {Zhang, Zelin and Chen, Bin},
+  title         = {{KPolaris}: {GPU}-accelerated Polarized Radiative
+                   Transfer in General Relativity},
+  year          = {2026},
+  eprint        = {2609.26298},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2609.26298}
+}
+```
 
 Version 0.1.0 DOI: [10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728).
 The [all-versions DOI](https://doi.org/10.5281/zenodo.22879727) identifies the software across releases.
@@ -229,4 +244,3 @@ The [all-versions DOI](https://doi.org/10.5281/zenodo.22879727) identifies the s
 ```
 
 Machine-readable citation metadata is available in [CITATION.cff](CITATION.cff).
-Please also cite the associated paper when available.

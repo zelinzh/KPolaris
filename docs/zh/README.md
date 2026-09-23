@@ -29,8 +29,10 @@
 
 ## 引用
 
-在研究中使用本软件时，请引用 v0.1.0 的版本 DOI：
+在研究中使用 KPolaris 时，请引用 Zhang 和 Chen（2026）的论文
+[arXiv:2609.26298](https://arxiv.org/abs/2609.26298)，以及所使用的软件版本。
+v0.1.0 的版本 DOI：
 [10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728)。
 作者和软件信息见 [CITATION.cff](../../CITATION.cff)。
 [所有版本的总 DOI](https://doi.org/10.5281/zenodo.22879727)用于指代持续维护的软件。
-相关论文发表后，请同时引用论文。
+论文和软件的 BibTeX 条目见[仓库引用部分](../../README_zh.md#引用)。

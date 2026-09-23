@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use KPolaris in published work, please cite this software and the associated paper when available."
+message: "If you use KPolaris in your research, please cite the paper and the software version used. The paper is given in preferred-citation; the top-level metadata identify the software version."
 title: "KPolaris: GPU-accelerated Polarized Radiative Transfer in General Relativity"
 type: software
 authors:
@@ -37,3 +37,20 @@ keywords:
   - "GRMHD"
   - "Kokkos"
   - "CUDA"
+preferred-citation:
+  type: generic
+  title: "KPolaris: GPU-accelerated Polarized Radiative Transfer in General Relativity"
+  authors:
+    - family-names: "Zhang"
+      given-names: "Zelin"
+      orcid: "https://orcid.org/0009-0008-9585-1807"
+    - family-names: "Chen"
+      given-names: "Bin"
+      orcid: "https://orcid.org/0000-0003-4509-9705"
+  year: 2026
+  url: "https://arxiv.org/abs/2609.26298"
+  identifiers:
+    - type: other
+      value: "arXiv:2609.26298"
+      description: "arXiv preprint"
+  scope: "Cite this paper together with the software version used."

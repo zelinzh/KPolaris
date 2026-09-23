@@ -4,7 +4,7 @@ KPolaris 是面向 CPU 和 GPU 的偏振广义相对论辐射转移程序，可�
 等离子体模型或 GRMHD 数据生成 Stokes I/Q/U/V 图像，并分析发射位置、传播效应
 及物理参数对观测量的影响。
 
-[English](README.md) · [中文手册](docs/zh/README.md) · [Wiki](https://github.com/zelinzh/KPolaris/wiki/ZH-Home) · [画图说明（英文）](docs/plotting.md)
+[arxiv:2609.26298](https://arxiv.org/abs/2609.26298) · [English](README.md) · [中文手册](docs/zh/README.md) · [Wiki](https://github.com/zelinzh/KPolaris/wiki/ZH-Home) · [画图说明（英文）](docs/plotting.md)
 
 <img src="assets/riaf-preview.png" alt="M87* RIAF 的 Stokes I、Q、U、V" width="820">
 
@@ -127,7 +127,22 @@ Agent 可以依据仓库内的[操作指南](skills/kpolaris/SKILL.md)完成环�
 
 ## 引用
 
-如果在研究中使用 KPolaris，请引用本软件：
+如果在研究中使用 KPolaris，请引用论文和所使用的软件版本。
+
+Zelin Zhang and Bin Chen (2026), *KPolaris: GPU-accelerated Polarized Radiative
+Transfer in General Relativity*. [arXiv:2609.26298](https://arxiv.org/abs/2609.26298).
+
+```bibtex
+@misc{zhang2026kpolaris,
+  author        = {Zhang, Zelin and Chen, Bin},
+  title         = {{KPolaris}: {GPU}-accelerated Polarized Radiative
+                   Transfer in General Relativity},
+  year          = {2026},
+  eprint        = {2609.26298},
+  archivePrefix = {arXiv},
+  url           = {https://arxiv.org/abs/2609.26298}
+}
+```
 
 v0.1.0 版本 DOI：[10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728)。
 [所有版本的总 DOI](https://doi.org/10.5281/zenodo.22879727)用于指代持续维护的软件；复现本次发布时请使用版本 DOI。
@@ -143,4 +158,4 @@ v0.1.0 版本 DOI：[10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.228
 }
 ```
 
-机器可读的引用信息见 [CITATION.cff](CITATION.cff)。相关论文发表后，请同时引用论文。
+机器可读的引用信息见 [CITATION.cff](CITATION.cff)。

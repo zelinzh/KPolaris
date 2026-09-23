@@ -51,8 +51,11 @@ for your simulation, and check convergence of the observables you intend to use.
 
 ## Citation
 
-If you use KPolaris in your research, cite version 0.1.0 using
+If you use KPolaris in your research, please cite the paper by Zhang and Chen (2026),
+[arXiv:2609.26298](https://arxiv.org/abs/2609.26298), and the software version used.
+For version 0.1.0, use
 DOI [10.5281/zenodo.22879728](https://doi.org/10.5281/zenodo.22879728).
 Author and software metadata are provided in [CITATION.cff](../CITATION.cff).
 The [all-versions DOI](https://doi.org/10.5281/zenodo.22879727) identifies the software
-across releases. Please also cite the associated paper when available.
+across releases. BibTeX entries for the paper and software are in the
+[repository citation section](../README.md#citation).
